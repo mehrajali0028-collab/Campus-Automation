@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIET Smart Campus Dashboard</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: url('image/image22.webp') no-repeat center center fixed; background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .main-container { background: rgba(255, 255, 255, 0.15);  width: 98%; max-width: 1400px; height: 95vh; border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.2); padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.4); overflow-y: auto; position: relative; text-align: center; }
+        
+        h1 { color: #000; font-size: 28px; margin-bottom: 15px; font-weight: bold; text-shadow: 1px 1px white; }
+
+        /* Power Analytics Grid (Universal for all pages) */
+        .analytics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 60px; padding: 0 20px; } /* Margin badha kar niche sarka diya */
+        .analytics-box { background: rgba(74, 118, 192, 0.95); color: white; padding: 15px; border-radius: 15px; font-size: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .analytics-box span { display: block; font-size: 22px; margin-top: 5px; color: #fff; }
+
+        /* Main Grid */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; padding: 0 20px; }
+        .dept-card { background: rgba(160, 160, 160, 0.9); padding: 40px 20px; border-radius: 25px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.3); transition: 0.3s; } /* Padding badha di */
+        .dept-card h3 { font-size: 24px; margin-bottom: 10px; } /* Font size bada diya */
+        .dept-card:hover { background: rgba(220, 220, 220, 1); transform: translateY(-5px); }
+
+        /* Attendance & Log */
+        .present-box { background: #2e7d32; color: white; padding: 20px; border-radius: 20px; font-size: 22px; font-weight: bold; margin-bottom: 15px; }
+        .present-box span { font-size: 40px; display: block; }
+        .log-container { background: #1e1e1e; color: #76b041; text-align: left; padding: 20px; border-radius: 15px; height: 320px; overflow-y: auto; font-family: 'Courier New', monospace; border: 2px solid #555; font-size: 18px; }
+
+        /* Switch Grid */
+        .appliance-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .btn { padding: 12px 5px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white; font-size: 12px; }
+        .btn-on { background: #76b041; }
+        .btn-off { background: #d32f2f; }
+
+        .hidden { display: none; }
+        .back-btn { position: absolute; top: 20px; left: 30px; background: #333; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; z-index: 100; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    <button class="back-btn hidden" id="backBtn" onclick="goBack()">⬅ BACK</button>
+
+    <div id="page1">
+        <h1>JIET Smart Campus: Global Power Monitor</h1>
+        <div class="analytics-grid">
+            <div class="analytics-box">Campus MTD <span>1,200 kWh</span></div>
+            <div class="analytics-box">Campus Today <span>45.2 kWh</span></div>
+            <div class="analytics-box">Estimate Bill <span>₹ 9,600</span></div>
+            <div class="analytics-box">Total Budget <span>₹ 22,034</span></div>
+        </div>
+        <div class="grid">
+            <div class="dept-card" onclick="openDept()"><h3>Electronics & Comm.</h3>🟢 <span id="ece-on">0</span> 🟠 <span id="ece-off">26</span></div>
+            <div class="dept-card"><h3>Computer Science</h3>🟢 24 🟠 16</div>
+            <div class="dept-card"><h3>Civil Engineering</h3>🟢 5 🟠 25</div>
+            <div class="dept-card"><h3>Mechanical Eng.</h3>🟢 17 🟠 3</div>
+            <div class="dept-card"><h3>AI & ML</h3>🟢 20 🟠 10</div>
+            <div class="dept-card"><h3>Electrical Eng.</h3>🟢 12 🟠 18</div>
+        </div>
+    </div>
+
+    <div id="page2" class="hidden">
+        <h1>ECE Department: Smart Analytics</h1>
+        <div class="analytics-grid">
+            <div class="analytics-box">ECE MTD <span>142.5 kWh</span></div>
+            <div class="analytics-box">ECE Today <span>12.8 kWh</span></div>
+            <div class="analytics-box">Dept Bill <span>₹ 1,140</span></div>
+            <div class="analytics-box">Dept Budget <span>₹ 150</span></div>
+        </div>
+        <div class="grid">
+            <div class="dept-card" onclick="openRoom('LT21')"><h3>LT-21</h3><p>LIVE</p></div>
+            <div class="dept-card" onclick="openRoom('LT22')"><h3>LT-22</h3><p>LIVE</p></div>
+            <div class="dept-card"><h3>LT-23</h3><p>Offline</p></div>
+            <div class="dept-card"><h3>IoT Lab</h3><p>Active</p></div>
+            <div class="dept-card"><h3>Antenna Lab</h3><p>Standby</p></div>
+            <div class="dept-card"><h3>Analog Lab</h3><p>Active</p></div>
+        </div>
+    </div>
+
+    <div id="roomLT21" class="hidden">
+        <h1>LT-21: Power & Attendance Analytics</h1>
+        <div class="analytics-grid">
+            <div class="analytics-box">Room MTD <span>12.5 kWh</span></div>
+            <div class="analytics-box">Room Today <span>1.2 kWh</span></div>
+            <div class="analytics-box">Room Bill <span>₹ 96</span></div>
+            <div class="analytics-box">Room Budget <span>₹ 20</span></div>
+        </div>
+        <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
+            <div class="dept-card" style="cursor:default;">
+                <div class="present-box">Students Present <span id="count-lt21">0</span></div>
+                <h4 style="margin:10px 0;">Lights (6)</h4>
+                <div class="appliance-grid">
+                    <button id="lt21-l1" class="btn btn-off" onclick="toggle('LT21', 'v0', 'lt21-l1')">Light 1</button>
+                    <button class="btn btn-off">Light 2</button><button class="btn btn-off">Light 3</button>
+                    <button class="btn btn-off">Light 4</button><button class="btn btn-off">Light 5</button>
+                    <button class="btn btn-off">Light 6</button>
+                </div>
+                <h4 style="margin:20px 0 10px 0;">Fans (7)</h4>
+                <div class="appliance-grid">
+                    <button class="btn btn-off">Fan 1</button><button class="btn btn-off">Fan 2</button>
+                    <button class="btn btn-off">Fan 3</button><button class="btn btn-off">Fan 4</button>
+                    <button class="btn btn-off">Fan 5</button><button class="btn btn-off">Fan 6</button>
+                    <button class="btn btn-off">Fan 7</button>
+                </div>
+            </div>
+            <div class="dept-card" style="cursor:default; text-align:left;">
+                <h3>Live Attendance</h3>
+                <div id="log-lt21" class="log-container">Waiting...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="roomLT22" class="hidden">
+        <h1>LT-22: Power & Attendance Analytics</h1>
+        <div class="analytics-grid">
+            <div class="analytics-box">Room MTD <span>10.8 kWh</span></div>
+            <div class="analytics-box">Room Today <span>0.9 kWh</span></div>
+            <div class="analytics-box">Room Bill <span>₹ 82</span></div>
+            <div class="analytics-box">Room Budget <span>₹ 20</span></div>
+        </div>
+        <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
+            <div class="dept-card" style="cursor:default;">
+                <div class="present-box">Students Present <span id="count-lt22">0</span></div>
+                <h4 style="margin:10px 0;">Lights (6)</h4>
+                <div class="appliance-grid">
+                    <button id="lt22-l1" class="btn btn-off" onclick="toggle('LT22', 'v0', 'lt22-l1')">Light 1</button>
+                    <button class="btn btn-off">Light 2</button><button class="btn btn-off">Light 3</button>
+                    <button class="btn btn-off">Light 4</button><button class="btn btn-off">Light 5</button>
+                    <button class="btn btn-off">Light 6</button>
+                </div>
+                <h4 style="margin:20px 0 10px 0;">Fans (7)</h4>
+                <div class="appliance-grid">
+                    <button class="btn btn-off">Fan 1</button><button class="btn btn-off">Fan 2</button>
+                    <button class="btn btn-off">Fan 3</button><button class="btn btn-off">Fan 4</button>
+                    <button class="btn btn-off">Fan 5</button><button class="btn btn-off">Fan 6</button>
+                    <button class="btn btn-off">Fan 7</button>
+                </div>
+            </div>
+            <div class="dept-card" style="cursor:default; text-align:left;">
+                <h3>Live Attendance</h3>
+                <div id="log-lt22" class="log-container">Waiting...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const rooms = {
+        LT21: { tkn: "aiB9Y3ooe-ZWfg24P1uIOjXGTavjJSV0", last: "", count: 0, state: 0 },
+        LT22: { tkn: "6l1wf8qcnsiPhC4kSH3a4c6Bl-qdrAly", last: "", count: 0, state: 0 }
+    };
+    let navHistory = ['page1'];
+
+    function openDept() { switchP('page1', 'page2'); }
+    function openRoom(id) { switchP('page2', 'room' + id); }
+    function switchP(o, n) { document.getElementById(o).classList.add('hidden'); document.getElementById(n).classList.remove('hidden'); document.getElementById('backBtn').classList.remove('hidden'); navHistory.push(n); }
+    function goBack() { if(navHistory.length <= 1) return; let c = navHistory.pop(); let p = navHistory[navHistory.length-1]; document.getElementById(c).classList.add('hidden'); document.getElementById(p).classList.remove('hidden'); if(p==='page1') document.getElementById('backBtn').classList.add('hidden'); }
+
+    function toggle(rid, pin, bid) {
+        const t = rooms[rid].tkn;
+        fetch(`https://blynk.cloud/external/api/get?token=${t}&${pin}`).then(r => r.text()).then(v => {
+            let s = v.trim() == "1" ? "0" : "1";
+            fetch(`https://blynk.cloud/external/api/update?token=${t}&${pin}=${s}`).then(() => updateBtn(bid, s));
+        });
+    }
+
+    function updateBtn(id, s) { const b = document.getElementById(id); if(b) b.className = s == "1" ? "btn btn-on" : "btn btn-off"; }
+
+    function sync() {
+        let eceOn = 0;
+        Object.keys(rooms).forEach(r => {
+            const t = rooms[r].tkn;
+            fetch(`https://blynk.cloud/external/api/get?token=${t}&v0`).then(res => res.text()).then(v => {
+                let s = v.trim() == "1" ? 1 : 0;
+                rooms[r].state = s;
+                updateBtn(r.toLowerCase() + '-l1', s);
+                if(s === 1) eceOn++;
+                document.getElementById('ece-on').innerText = eceOn;
+                document.getElementById('ece-off').innerText = 26 - eceOn;
+            });
+            fetch(`https://blynk.cloud/external/api/get?token=${t}&v1`).then(res => res.text()).then(m => {
+                m = m.trim();
+                if (m && m !== rooms[r].last && !m.includes("Online")) {
+                    rooms[r].last = m;
+                    rooms[r].count++;
+                    document.getElementById('count-' + r.toLowerCase()).innerText = rooms[r].count;
+                    const log = document.getElementById('log-' + r.toLowerCase());
+                    if(log.innerText.includes("Waiting")) log.innerHTML = "";
+                    log.innerHTML = `<div style="border-bottom:1px solid #444; margin-bottom:10px;">[${new Date().toLocaleTimeString()}] <br> <b>${m}</b></div>` + log.innerHTML;
+                }
+            });
+        });
+    }
+    setInterval(sync, 4000);
+</script>
+</body>
+</html>
